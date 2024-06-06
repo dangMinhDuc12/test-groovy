@@ -7,10 +7,8 @@ def functionTwo() {
 }
 
 def testGetBuildCacheSize() {
- def buildCacheSizeOutput = sh(
-                        script: "docker system df --format '{{json .}}' | jq '[.[] | select(.Type | contains(\"Build Cache\"))][0].Size' | sed 's/\"//g'", // Remove quotes
-                        returnStdout: true
-                    ).trim()
+  def dockerDfOutput = sh(script: 'docker system df --format "{{.BuildCache}}" | awk \'{print $1}\'', returnStdout: true).trim()
+                    def cacheSizeGB = (dockerDfOutput.toFloat() / 1024 / 1024 / 1024).round(2)  // Convert to GB
 
-  echo ${buildCacheSizeOutput}
+                    echo "Current build cache size: ${cacheSizeGB} GB
 }
