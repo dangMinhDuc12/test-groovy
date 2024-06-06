@@ -2,6 +2,6 @@ def functionOne(param) {
   echo "Hello ${param}"
 }
 
-def functionTwo {
+def functionTwo() {
   echo "Hello from function two"
 }
