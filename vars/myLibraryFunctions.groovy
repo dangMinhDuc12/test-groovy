@@ -7,8 +7,10 @@ def functionTwo() {
 }
 
 def testGetBuildCacheSize() {
-  def buildCacheSizeOutput = sh(
-                        script: """docker system df --format '{{json .}}' | jq -r '[.[] | select(.Type == "Build Cache") | .Size] | if length > 0 then .[0] else "0B" end'""",
+ def buildCacheSizeOutput = sh(
+                        script: "docker system df --format '{{json .}}' | jq '[.[] | select(.Type | contains(\"Build Cache\"))][0].Size' | sed 's/\"//g'", // Remove quotes
                         returnStdout: true
                     ).trim()
+
+  echo ${buildCacheSizeOutput}
 }
