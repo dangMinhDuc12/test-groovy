@@ -7,16 +7,8 @@ def functionTwo() {
 }
 
 def testGetBuildCacheSize() {
-   // Get Docker build cache size
-                    def buildCacheSize = sh(script: """
-                        docker system df --format '{{json .}}' | \
-                        jq -r '.[] | select(.Type == "Build Cache") | .Size'
-                    """, returnStdout: true).trim()
-                    
-                    // Convert size to bytes for comparison 
-                    def buildCacheSizeBytes = sh(script: """
-                        numfmt --from=iec --to=bytes '$buildCacheSize'
-                    """, returnStdout: true).trim().toInteger()
-
-                    echo ${buildCacheSizeBytes}
+  def buildCacheSizeOutput = sh(
+                        script: """docker system df --format '{{json .}}' | jq -r '[.[] | select(.Type == "Build Cache") | .Size] | if length > 0 then .[0] else "0B" end'""",
+                        returnStdout: true
+                    ).trim()
 }
